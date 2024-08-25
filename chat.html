@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white h-screen shadow-lg">
+            <div class="p-4">
+                <h1 class="text-2xl font-bold text-indigo-600">Resume</h1>
+            </div>
+            <nav class="mt-10">
+                <ul>
+                    <li class="flex items-center p-2 hover:bg-gray-200">
+                        <span class="material-icons">home</span>
+                        <a href="#" class="ml-2 text-md font-medium">Tableau de bord</a>
+                    </li>
+                    <li class="flex items-center p-2 hover:bg-gray-200">
+                        <span class="material-icons">local_atm</span>
+                        <a href="#" class="ml-2 text-md font-medium">Caisse</a>
+                    </li>
+                    <li class="flex items-center p-2 hover:bg-gray-200">
+                        <span class="material-icons">receipt</span>
+                        <a href="#" class="ml-2 text-md font-medium">Facture</a>
+                    </li>
+                    <li class="flex items-center p-2 hover:bg-gray-200">
+                        <span class="material-icons">people</span>
+                        <a href="#" class="ml-2 text-md font-medium">Clients</a>
+                    </li>
+                    <li class="flex items-center p-2 hover:bg-gray-200">
+                        <span class="material-icons">person</span>
+                        <a href="#" class="ml-2 text-md font-medium">Utilisateurs</a>
+                    </li>
+                    <li class="flex items-center p-2 hover:bg-gray-200">
+                        <span class="material-icons">inventory_2</span>
+                        <a href="#" class="ml-2 text-md font-medium">Produits</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex-1 p-6">
+            <header class="flex justify-between items-center">
+                <h2 class="text-xl font-semibold">Tableau de bord</h2>
+                <div class="flex items-center">
+                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="rounded-full">
+                    <div class="ml-2">
+                        <p class="text-md font-medium">Gilles AKAKPO</p>
+                        <p class="text-sm text-gray-600">Administrateur</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                <div class="bg-white p-4 rounded-lg shadow-lg">
+                    <p class="text-sm text-gray-600">Profit</p>
+                    <p class="text-2xl font-bold">350,300 XOF</p>
+                    <p class="text-green-500 text-sm">67.81%</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-lg">
+                    <p class="text-sm text-gray-600">En rupture de stock</p>
+                    <p class="text-2xl font-bold">32</p>
+                    <p class="text-red-500 text-sm">-67.81%</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-lg">
+                    <p class="text-sm text-gray-600">Stock utilisé</p>
+                    <p class="text-2xl font-bold">50%</p>
+                    <p class="text-red-500 text-sm">-50%</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-lg">
+                    <p class="text-sm text-gray-600">Produits en stock</p>
+                    <p class="text-2xl font-bold">32</p>
+                    <p class="text-green-500 text-sm">67.81%</p>
+                </div>
+            </div>
+
+            <!-- Operations -->
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold mb-4">Opération</h3>
+                <div class="bg-white p-4 rounded-lg shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <p>Règlement de la facture 890543</p>
+                        <p class="text-green-500">25,000 XOF</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-lg mt-2">
+                    <div class="flex justify-between items-center">
+                        <p>Règlement de la facture 890543</p>
+                        <p class="text-red-500">25,000 XOF</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-lg mt-2">
+                    <div class="flex justify-between items-center">
+                        <p>Règlement de la facture 890543</p>
+                        <p class="text-green-500">25,000 XOF</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-lg mt-2">
+                    <div class="flex justify-between items-center">
+                        <p>Règlement de la facture 890543</p>
+                        <p class="text-green-500">25,000 XOF</p>
+                    </div>
+                </div>
+                <a href="#" class="text-indigo-600 mt-4 inline-block">Voir plus</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

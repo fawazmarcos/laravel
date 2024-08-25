@@ -9,8 +9,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
       '@components': path.resolve(__dirname, 'src/components'),
       '@pages': path.resolve(__dirname, 'src/pages'),
-      // '@stores': path.resolve(__dirname, 'src/stores'),
-      // '@axios': path.resolve(__dirname, 'src/plugins/axios.js'),
+      '@stores': path.resolve(__dirname, 'src/stores'),
+      '@axios': path.resolve(__dirname, 'src/plugins/axios.js'),
     },
   },
 })
