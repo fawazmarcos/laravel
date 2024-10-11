@@ -3,7 +3,7 @@
 <template>
   <Dashboard>
     <template #content>
-      <div class="flex flex-col gap-4 " v-if="storeTimesheet.timesheets && current_timesheet==null" >
+      <div class="flex flex-col gap-4 " v-if="storeTimesheet.timesheets && !storeTimesheet.loading" >
         <div class="flex justify-between items-center">
           <div class="flex gap-3 items-center">
             <h2 class="text-xl font-semibold">Mes Temps</h2>
@@ -23,7 +23,7 @@
                     <h3 class="text-md font-bold text-gray-800">
                       {{ timesheet.month_label }} {{ timesheet.year }}
                     </h3>
-                    <span @click="showTimesheet(timesheet)" class="cursor-pointer text-gray-900 hover:text-blue-900"><i class="fa fa-edit"></i></span>
+                    <RouterLink :to="'edit_my_timesheet?timesheet_id='+timesheet.id"  class="cursor-pointer text-gray-900 hover:text-blue-900"><i class="fa fa-edit"></i></RouterLink>
                   </div>
                   <div class="flex justify-between items-center">
                     <p class="mt-1 text-gray-500 text-xs">
@@ -115,106 +115,11 @@
           </form>
         </dialog>
       </div>
-      <div v-if="current_timesheet!=null" class="flex flex-col gap-5 p-4">
-        <div class="flex justify-between items-center">
-          <span @click="current_timesheet=null" class="cursor-pointer font-semibold text-md" > <i class="fa fa-chevron-left"></i> Retour</span>
-          <div class="flex gap-3 items-center">
-            <h2 class="text-xl font-semibold">Feuille de Temps {{ current_timesheet.month_label }} {{ current_timesheet.year }}</h2> <span class=" text-gray- rounded-md p-1 text-xs " :class="'bg-'+current_timesheet.status_color+'-500'">{{ current_timesheet.status_label }}</span>
-          </div>
-        </div> 
-        <div class="grid grid-cols-7 gap-2 w-full max-w-2xl mx-auto !hidden">
-      <div 
-        class="rounded border p-2 shadow h-16 text-center text-sm flex flex-col gap-1" 
-        v-for="entry in get_current_timesheet_entries" 
-        :key="entry.id" 
-        :class="dayClasses(entry.can_edit)"
-        @click="enableEditing(entry)">
-        <span class="text-xs">{{ entry.day }} {{ entry.day_label }}</span>
-        <span v-if="!entry.isEditing" id="input" class="rounded bg-gray-300">{{ entry.work_duration }}</span>
-        <input 
-          v-else 
-          type="number" 
-          step="0.25" 
-          max="1" 
-          min="0" 
-          class="rounded p-1 border text-center"
-          v-model="entry.work_duration"
-          @change="updateWorkDuration(entry)"
-          />
-          <!-- @keyup.enter="disableEditing(entry)" -->
+      <div v-else-if="storeTimesheet.loading">
+        <Loading /> 
       </div>
-
-</div>
-<div v-if="current_timesheet!=null" class="flex items-center justify- gap-3 mt-5" >
-  <button @click="current_page--" v-if="current_page > 0" type="button" class="py-1.5 px-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
-    Prev.
-  </button>
-  <button @click="current_page++" v-if="current_page < totalPages-1" type="button" class="py-1.5 px-2 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
-    Suiv.
-  </button>
-</div>
-    <div v-if="current_timesheet!=null" class="flex flex-col">
-      <div class="-m-1.5 ">
-        <div class="p-1.5 min-w-full inline-block align-middle">
-          <div class="border rounded-lg overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Activité</th>
-                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"  v-for="entry in get_current_timesheet_entries" 
-                  :key="entry.id" ><span class="flex">{{ entry.day }} {{ entry.day_label }}</span></th>
-                  <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Total du Mois</th>
-                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Total Effectif</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200">
-                <tr v-for="project in storeProject.pending_projects" :key="project.id">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">{{ project.title }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" :id="project.id+'/'+entry.id" v-for="entry in get_current_timesheet_entries" :key="entry.id"> 
-                  <!-- {{ entry }} -->
-                  <!-- {{ entry.timesheet_entry_projects.find(p => p.project_id === project.id).work_duration }} -->
-                  <!-- {{ get_entry_project(entry,project.id) }} -->
-                  <select v-if="current_timesheet.status !=='approved'" name="" id="" v-model="entry.timesheet_entry_projects.find(p => p.project_id === project.id).work_duration"
-                   @change="updateEntryProject(entry.timesheet_entry_projects.find(p => p.project_id === project.id))" class="rounded p-1 borde text-center">
-                   <option value="0">0</option> 
-                   <option :value="i" v-for="i=0 in 16" :key="i">{{ i }}</option>
-                  </select>
-                  <span v-else>{{ entry.timesheet_entry_projects.find(p => p.project_id === project.id).work_duration }}</span>
-                </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ get_total_month_by_project(project.id) }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ get_total_effectif_month_by_project(project.id) }}</td>
-                </tr> 
-                <tr>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Total</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center" :class="get_classes(get_total_by_day(entry))" v-for="entry in get_current_timesheet_entries" :key="entry.id">{{ get_total_by_day(entry) }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ get_total_month() }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{{ get_total_effectif_month() }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-<div class="flex flex-col gap-2 w-full">
-  <div v-if="current_timesheet.comment"  class=" mx-auto mt-2 bg-red-800 text-sm text-white rounded-lg p-4 " role="alert">
-    <span class="font-bold"> Note :  </span> {{ current_timesheet.comment }} 
-  </div>
-  <div class="flex gap-2 items-center mx-auto mt-2" v-if="current_timesheet.status=='pending'">
-    <span  @click="updateTimesheetToPendingValidation()" class="rounded bg-gray-900 text-sm p-2 mx-auto cursor-pointer text-white">Soumission pour validation</span>
-    <a href="/timesheet" class="rounded bg-red-500 text-sm p-2 mx-auto cursor-pointer text-white">Quitter</a>
-    <span @click="reinit()" class="rounded bg-blue-700 text-sm p-2 mx-auto cursor-pointer text-white">REINITIALISATION</span>
-  </div>
-  <span v-if="current_timesheet.status=='pending_validation'" class="rounded border-orange-500 text-orange-500 text-sm p-2 mx-auto cursor-pointer text- gap-2 flex items-center border"> <i class="fa fa-clock"></i>{{ current_timesheet.status_label }}</span>
-  <span v-if="current_timesheet.status=='approved'" class="rounded border-green-500 text-green-500 text-sm p-2 mx-auto text- gap-2 flex items-center border"> <i class="fa fa-check"></i>{{ current_timesheet.status_label }} le {{ current_timesheet.updated_at }}</span>
-  <span>
-    Pour saisir vos temps , cliquez sur le jour de votre choix , puis saisissez le temps que vous avez passé pour ce jour.
-  </span>
-  <span>1 : 30 minutes</span>
-  <span> 2 : 1 heure</span> 
- <span> 8 : 4 heures</span>
- <span> 16 : 8 heures</span>
-</div>
+      <div v-else>
+        TimeSheet not found
       </div>
     </template>
   </Dashboard>
@@ -519,9 +424,10 @@ export default {
     }
   },
   mounted() {
+
     this.storeTimesheet.getTimesheets()
     this.storeProject.getPendingProjects()
-    this.storeTimesheet.getMonthYear()
+    // this.storeTimesheet.getMonthYear()
   }
 
 }

@@ -5,7 +5,7 @@ import { defineStore } from 'pinia'
 import router from '../router'
 
 export const useDashboardStore = defineStore('dashboard', {
-  state: () => ({loading: false,stats:[],stat:null,secteurs:[],meta:[], last_data:[] }),
+  state: () => ({loading: false,stats:[],stat:null,secteurs:[],meta:[], last_data:[], loading_stats: false,loading_last_data: false}),
   actions: {
 
     // catch error
@@ -31,22 +31,23 @@ export const useDashboardStore = defineStore('dashboard', {
     // get dashboards
     getStats(period='this_month'){
       const url = '/api/stats/'+period;
-      this.loading = true;
+      this.loading_stats = true;
       axios.get(url).then((response) => {
         this.stats = response.data;
-        this.loading = false;
+        this.loading_stats = false;
       }).catch((error) => {
         this.catchError(error);
+        this.loading_stats = false;
       })
     },
 
     // get last data
     getLastData(){
       const url = '/api/last-data';
-      this.loading = true;
+      this.loading_last_data = true;
       axios.get(url).then((response) => {
         this.last_data = response.data;
-        this.loading = false;
+        this.loading_last_data = false;
       }).catch((error) => {
         this.catchError(error);
       })

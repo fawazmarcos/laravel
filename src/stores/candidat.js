@@ -46,6 +46,31 @@ export const useCandidatStore = defineStore('candidat', {
         this.catchError(error);
       })
     },
+
+    theCandidat(id){
+      this.loading = true;
+      // axios.get('/api/candidats/'+id).then((response) => {
+      //   this.candidat = response.data.data;
+      //   this.loading = false;
+      //   // console.log('data returned');
+      //   return response.data.data;
+      // }).catch((error) => {
+      //   this.catchError(error);
+      //   return false;
+      // })
+
+      return axios.get('/api/candidats/' + id)
+        .then((response) => {
+          this.candidat = response.data.data;
+          this.loading = false;
+          return response.data.data;  
+        })
+        .catch((error) => {
+          this.catchError(error);
+          this.loading = false;
+          return false;   
+      });
+    },
  
 
     // post candidats
@@ -99,6 +124,8 @@ export const useCandidatStore = defineStore('candidat', {
         this.catchError(error);
       })
     },
+
+    
 
 
   },

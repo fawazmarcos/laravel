@@ -11,6 +11,7 @@ import MultiSelect from 'primevue/multiselect';
 
 import Logo from '@components/Logo.vue'
 import Close from '@components/Close.vue'
+import Loading from '@components/Loading.vue'
 import Dashboard from '@components/Dashboard/Dashboard.vue'
 
 
@@ -31,4 +32,5 @@ createApp(App)
 .component('MultiSelect', MultiSelect)
 .component('Dashboard', Dashboard)
 .component('Close', Close)
+.component('Loading', Loading)
 .mount('#app')

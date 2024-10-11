@@ -3,7 +3,7 @@
 <template>
   <Dashboard>
     <template #content>
-      <div class="flex flex-col gap-4 " v-if="storeTimesheet.monthYear" >
+      <div class="flex flex-col gap-4 " v-if="storeTimesheet.monthYear && !storeTimesheet.loading" >
         <div class="flex justify-between items-center">
           <div class="flex gap-3 items-center">
             <h2 class="text-xl font-semibold">Gérer les feuilles de temps</h2>
@@ -39,7 +39,7 @@
         </div> 
         <div class="flex flex-col gap-3 w-full" v-else>
           <div class="flex justify-center items-center w-full h-48 bg-100 rounded-lg">
-            <span class="text-2xl font-semibold">Aucune feuille en attente de validation</span>
+            <span class="text-2xl font-semibold">Aucune feuille pour le mois {{ storeTimesheet.monthYear.year }} {{ storeTimesheet.monthYear.month_label }}</span>
           </div>
         </div>  
         <dialog id="modal_timesheet" class="modal">
@@ -95,7 +95,9 @@
             </div>
           </form>
         </dialog>
-       
+      </div>
+      <div v-else-if="storeTimesheet.loading">
+        <Loading /> 
       </div>
       
     </template>
@@ -105,10 +107,12 @@
 <script>
 import { useTimesheetStore } from '@stores/timesheet'
 import { useProjectStore } from '@stores/project'
+import Loading from '../../components/Loading.vue'
 
 
 export default {
   components: {
+    Loading
   }, 
   data() {
       return {
@@ -331,8 +335,8 @@ export default {
     }
   },
   mounted() {
-    this.storeTimesheet.getAllTimesheets()
-    this.storeProject.getPendingProjects()
+    // this.storeTimesheet.getAllTimesheets()
+    // this.storeProject.getPendingProjects()
     this.storeTimesheet.getMonthYear()
 
   }

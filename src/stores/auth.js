@@ -7,7 +7,7 @@ import router from '../router'
 
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({ user: null, loading: false, email: '', error: false , theUser : null, formations: [],certifications: [],expertises: [],interests: [],skills: [], mskills: [], tskills: [],experiences: [],loadingPasse: false}),
+  state: () => ({ user: null, loading: false, email: '', error: false , theUser : null, formations: [],certifications: [],expertises: [],interests: [],skills: [], mskills: [], tskills: [],experiences: [],loadingPasse: false,mails: [], is_auth_office:true,is_office_loading:false}),
   actions: {
     login(body) {
       this.loading = true;
@@ -505,6 +505,76 @@ export const useAuthStore = defineStore('auth', {
         toast.error("Une erreur est survenue.", {
           autoClose: 3000,
         });
+      })
+    },
+
+    // get o365 url
+    getO365Url(){
+      axios.get('/api/microsoft-auth/redirect').then((response) => {
+        const url = response.data.url;
+        window.location.href = url;
+      }).catch((error) => {
+        console.log(error);
+      })
+    },
+
+    // confirm o365 code
+    confirmO365Code(code) {
+      const body = {
+        code: code
+      }
+      this.loading = true;
+      axios.post('/api/microsoft-auth/callback', body).then((response) => {
+         toast.success("Connexion Office 365réussie.", {
+          autoClose: 3000,
+        });
+        this.loading = false;
+        window.location.href = "/mails";
+      }).catch((error) => {
+        console.log(error);
+      })
+
+    },
+
+    // get mails
+    getMails(){
+      this.is_office_loading = true;
+      axios.get('/api/mails').then((response) => {
+        this.mails = response.data.value;
+        this.is_office_loading = false;
+      }).catch((error) => {
+        const code = error.response.status;
+        this.is_office_loading = false;
+        const message = error.response.data.message;
+        if(error.response.data.url){
+          window.location.href = error.response.data.url;
+        }
+        // toast.error(message, {
+        //   autoClose: 5000,
+        // });
+        // if(code == 523){
+        //   this.is_auth_office = false;
+        // }
+      })
+    },
+
+    sendMail(body) {
+      this.loading = true;
+      axios.post('/api/mails/send', body).then((response) => {
+        this.loading = false;
+        toast.success("Email envoyé.", {
+          autoClose: 3000,
+        });
+      }).catch((error) => {
+        console.log(error);
+        let message = "Une erreur est survenue!"
+        if (error.response) {
+          message = error.response.data.message;
+        }
+        toast.error(message, {
+          autoClose: 5000,
+        });
+        this.loading = false;
       })
     },
  

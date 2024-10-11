@@ -1,9 +1,7 @@
-
-
 <template>
   <Dashboard>
     <template #content>
-      <div class="flex flex-col gap-4 " v-if="storeOffer.offers">
+      <div class="flex flex-col gap-4 " v-if="storeOffer.offers && !showForm && !showCandidats">
         <div class="flex justify-between items-center">
           <div class="flex gap-3 items-center">
             <h2 class="text-xl font-semibold">Offres</h2>
@@ -42,7 +40,8 @@
                       </thead>
                       <tbody class="divide-y divide-gray-200">
                         <tr v-for="offer in storeOffer.offers" :key="offer.id">
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 flex items-center gap-2"> <img v-if="offer.photo" class=" border shadow w-10 h-10 rounded-full" :src="offer.photo" alt=""> 
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 flex items-center gap-2"> 
+                            <!-- <img v-if="offer.photo" class=" border shadow w-10 h-10 rounded-full" :src="offer.photo" alt="">  -->
                             <span>{{ offer.title }} </span>
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"> <i v-if="offer.website" class="fa fa-globe text-orange-500 mr-2"></i> <span class="rounded-md p-2  text-white text-xs" :class="offer.status == 'open' ? 'bg-green-500' : 'bg-red-500'">{{ offer.status == 'open' ? 'Ouvert' : 'Fermé' }}</span> </td>
@@ -55,6 +54,7 @@
                               <ul tabindex="0" class="dropdown-content !z-[100] menu p-2 shadow bg-base-100 rounded-box w-52">
                                 <li class="text-gray-500 flex text-left py-2 px-4">Actions</li>
                                 <li><span @click="openEditModal(offer)"> <i class="fa fa-edit"></i>Détails</span></li>
+                                <li><span @click="openCandidats(offer)"> <i class="fa fa-users"></i>Candidats</span></li>
                                 <li><span @click="deleteOffer(offer.id)" class="hover:bg-red-100 text-red-500  "> <i class="fa fa-trash"></i> Supprimer</span></li>
                               </ul>
                             </div> 
@@ -91,7 +91,14 @@
           </div>
         </div>  
         <dialog id="modal_offer" class="modal">
-          <form method="POST" @submit.prevent="postModal()" class="sm:max-w-lg sm:w-full m-3 sm:mx-auto">
+         
+        </dialog>
+      </div>
+      <div class="flex flex-col gap-4 " v-else-if="showForm">
+        <div class="flex justify-between items-center">
+          <span @click="closeForm()" class="cursor-pointer py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none"> <i class="fa fa-arrow-left"></i> Retour</span>
+        </div>
+        <form method="POST" @submit.prevent="postModal()" class=" m-3 ">
             <div class="flex flex-col bg-white border shadow-sm rounded-xl">
               <div class="flex justify-between items-center py-3 px-4 border-b">
                 <h3 class="font-bold text-gray-800">
@@ -101,7 +108,7 @@
               </div>
               <div class="p-4 overflow-y-auto gap-4 grid grid-cols-3">
                 <!-- photo -->
-                <div class=" col-span-3 flex flex-col gap-1">
+                <!-- <div class=" col-span-3 flex flex-col gap-1">
                   <label for="photo" class="cursor-pointer flex text-sm shadow font-medium m-auto rounded-full h-16 w-16 border ">
                     <img v-if="offer.photoImg" :src="offer.photoImg" alt="" class=" h-16 w-16 m-auto" rounded>
                     <svg v-else class="m-auto hqihs mto85" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
@@ -111,16 +118,11 @@
                     </svg>
                   </label>
                   <input type="file" id="photo" class="hidden" accept="image/*" @change="readURL($event.target)" >
-                </div>
+                </div> -->
                 <div class="flex flex-col gap-1 col-span-3">
                   <label for="title" class="block text-sm font-medium">Titre</label>
                   <input type="text" id="title" v-model="offer.title" class="py-2 px-3 block w-full border border-gray-500 rounded-lg text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 " placeholder="Titre">
                 </div> 
-                <div class="flex flex-col gap-1 col-span-3">
-                  <label for="description" class="block text-sm font-medium">Description</label>
-                  <!-- <input type="text" id="description" v-model="offer.description" class="py-2 px-3 block w-full border border-gray-500 rounded-lg text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 " placeholder="Description"> -->
-                  <textarea name="" id="" cols="30" v-model="offer.description" rows="4" class="py-2 px-3 block w-full border border-gray-500 rounded-lg text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 " placeholder="Description"></textarea>
-                </div>   
                 <div class="flex flex-col gap-1 ">
                   <label for="experience_years" class="block text-sm font-medium">Années d'expériences</label>
                   <input type="number" min="0" id="experience_years" v-model="offer.experience_years" class="py-2 px-3 block w-full border border-gray-500 rounded-lg text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 " placeholder="Expériences">
@@ -148,7 +150,13 @@
                 <div class="flex flex-col gap-1">
                   <label for="industry" class="block text-sm font-medium">Domaine d'activité</label>
                   <input type="text" id="industry" v-model="offer.industry" class="py-2 px-3 block w-full border border-gray-500 rounded-lg text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 " placeholder="Domaine d'activité">
+                </div> 
+                <div class="flex flex-col gap-1 col-span-3">
+                  <label for="description" class="block text-sm font-medium">Description</label>
+                  <!-- <input type="text" id="description" v-model="offer.description" class="py-2 px-3 block w-full border border-gray-500 rounded-lg text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 " placeholder="Description"> -->
+                  <textarea name="" id="" cols="30" v-model="offer.description" rows="20" class="py-2 px-3 block w-full border border-gray-500 rounded-lg text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 " placeholder="Description"></textarea>
                 </div>   
+                  
                
               </div>
               <div class="flex justify-end items-center gap-x-2 py-3 px-4 border-t">
@@ -165,7 +173,50 @@
               </div>
             </div>
           </form>
-        </dialog>
+      </div>
+
+      <div class="flex flex-col gap-4 " v-else-if="showCandidats">
+        <div class="flex justify-between items-center">
+          <span @click="closeCandidats()" class="cursor-pointer py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none"> <i class="fa fa-arrow-left"></i> Retour</span>
+        </div>
+        <span class="text-2xl font-">
+          Candidats pour l'offre : {{ offer.title }}
+        </span>
+        <div v-if="storeOffer.candidats && storeOffer.candidats.length > 0 && !storeOffer.loading_candidats ">
+          <div class="col-span-5 flex flex-col w-full gap-2">
+            <div class="grid grid-cols-4 gap-4">
+              <span target="_blank" v-for="candidat in storeOffer.candidats" :key="candidat.id" class=" flex flex-col group bg-white border shadow-sm rounded-xl overflow- hover:shadow-lg transition" >
+                <div class="p-4 md:p-5 gap-4 flex flex-col">
+                  <div class="flex justify-between gap-2 items-center">
+                    <h3 class="text-md font-bold text-gray-900 flex items-center gap-2">
+                      <img :src="candidat.photo" alt="p" class="h-10 w-10 rounded-full border shadow">
+                      <span class="flex flex-col gap-">
+                        <span>{{ candidat.first_name }} {{ candidat.last_name }}</span>
+                        <span class="mt-2 rounded-md bg-gray-900 text-white text-center p-1 text-xs font-normal ">{{ candidat.etape.name }}</span>
+                      </span>
+                    </h3>
+                    <div class="dropdown dropdown-end">
+                      <div tabindex="0" role="button" class=""><i class="fa-solid fa-ellipsis cursor-pointer"></i></div>
+                      <ul tabindex="0" class="dropdown-content !z-[100] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li class="text-gray-500 flex text-left py-2 px-4">Actions</li>
+                        <li><a :href="candidat.resumeImg" target="_blank" v-if="candidat.resumeImg" > <i class="fa fa-download"></i>Télécharger le CV</a></li>
+                      </ul>
+                    </div> 
+                  </div> 
+                </div>
+              </span>
+              <div class="-m-1.5 ">
+                <div class="p-1.5 min-w-full inline-block align-middle">
+                  <div class=" rounded-lg ">
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+        </div> 
+        <div v-else-if="storeOffer.loading_candidats">
+          <Loading />
+        </div>
       </div>
     </template>
   </Dashboard>
@@ -194,7 +245,9 @@ export default {
             type: 'o',
           },
           update : false,
-          search: ''
+          search: '',
+          showForm: false,
+          showCandidats: false,
       }
   },
   computed: {
@@ -233,9 +286,22 @@ export default {
           this.offer.photo = input.files[0];
         };
         reader.readAsDataURL(input.files[0]);
-
       }
 
+    },
+
+    closeForm(){
+      this.showForm = false;
+      this.initOffer();
+    },
+    closeCandidats(){
+      this.showCandidats = false;
+      this.initOffer();
+    },
+    openCandidats(offer){
+      this.offer = offer;
+      this.storeOffer.get_candidats_by_offer(offer.id)
+      this.showCandidats = true;
     },
     initSearch() {
       this.search = ''
@@ -249,10 +315,12 @@ export default {
     },
     openAddModal() {
       this.update = false
-      document.getElementById('modal_offer').showModal()
+      // document.getElementById('modal_offer').showModal()
+      this.showForm = true
     },
     closeModal() {
-      document.getElementById('modal_offer').close()
+      // document.getElementById('modal_offer').close()
+      this.showForm = false;
       this.initOffer()
     },
     async postModal() {
@@ -287,7 +355,8 @@ export default {
     openEditModal(offer) {
       this.offer = offer
       this.update = true
-      document.getElementById('modal_offer').showModal()
+      // document.getElementById('modal_offer').showModal()
+      this.showForm = true;
     },
     async getOffers(url) {
       await this.storeOffer.getOffers(url)

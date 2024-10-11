@@ -25,7 +25,7 @@
               </span>
           </div>
         </div>
-        <div v-if="storeEntreprise.entreprises && storeEntreprise.entreprises.length > 0">
+        <div v-if="storeEntreprise.entreprises">
             <div class="flex flex-col">
               <div class="-m-1.5 ">
                 <div class="p-1.5 min-w-full inline-block align-middle">
@@ -39,7 +39,7 @@
                           <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
                       </thead>
-                      <tbody class="divide-y divide-gray-200">
+                      <tbody class="divide-y divide-gray-200" v-if="storeEntreprise.entreprises.length > 0 && ! storeEntreprise.loading">
                         <tr v-for="entreprise in storeEntreprise.entreprises" :key="entreprise.id">
                           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 flex items-center gap-2"> <img v-if="entreprise.logo" class=" border shadow w-10 h-10 rounded-full" :src="entreprise.logo" alt=""> {{ entreprise.name }} </td>
                           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"> <i v-if="entreprise.domain" class="text-blue-500 fa fa-globe"></i> {{ entreprise.domain }}</td>
@@ -56,12 +56,19 @@
                           </td>
                         </tr>
                       </tbody>
+                      <tbody class="divide-y divide-gray-200" v-else-if="storeEntreprise.loading">
+                        <tr v-for="i in 10" :key="i"> 
+                          <td v-for="j in 4" :key="j" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800"> 
+                            <Loading :lines="1" :height="4" />
+                          </td>
+                        </tr>
+                      </tbody>
                     </table>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="flex items-center justify-between mt-5" >
+            <div class="flex items-center justify-between mt-5"  v-if="storeEntreprise.meta">
               <span class="text-sm">
                 {{ storeEntreprise.meta.from }}-{{ storeEntreprise.meta.to }} sur {{ storeEntreprise.meta.total }}
               </span>
@@ -80,9 +87,9 @@
               </div>
             </div>
         </div> 
-        <div class="flex flex-col gap-3 w-full" v-else>
+        <div class="flex flex-col gap-3 w-full"  v-if="storeEntreprise.entreprises && storeEntreprise.entreprises.length == 0 && !storeEntreprise.loading">
           <div class="flex justify-center items-center w-full h-48 bg-100 rounded-lg">
-            <span class="text-2xl font-semibold">Aucun entreprise</span>
+            <span class="text-2xl font-semibold">Aucune entreprise</span>
           </div>
         </div>  
         <dialog id="modal_entreprise" class="modal">

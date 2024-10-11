@@ -5,7 +5,7 @@ import { defineStore } from 'pinia'
 import router from '../router'
 
 export const useProfilStore = defineStore('profil', {
-  state: () => ({loading: false,profils:[],profil:null,secteurs:[],meta:[],links:[],total_profils:0,total_entreprises:0,currentUrl:null }),
+  state: () => ({loading: false,profils:[],profil:null,secteurs:[],meta:[],links:[],total_profils:0,total_entreprises:0,currentUrl:null,tags:[],loading_tags:false }),
   actions: {
 
     // catch error
@@ -20,13 +20,14 @@ export const useProfilStore = defineStore('profil', {
       });
     },
     // notify response
-    successResponse(response){
+    successResponse(response,show_toast=true){
       this.loading = false;
-      console.log(response.data);
       this.getProfils(this.currentUrl);
-      toast.success(response.data.message, {
-        autoClose: 5000,
-      });
+      if(show_toast){
+        toast.success(response.data.message, {
+          autoClose: 5000,
+        });
+      } 
     },
     // get profils
     getProfils(url=null){
@@ -76,7 +77,7 @@ export const useProfilStore = defineStore('profil', {
       document.getElementById('spinner_'+id).classList.remove('hidden');
       document.getElementById('spinner_'+id).classList.add('inline-flex');
       axios.get('/api/enrich-profil/'+id).then((response) => {
-        this.successResponse(response);
+        this.successResponse(response,false);
         document.getElementById('spinner_'+id).classList.remove('inline-flex');
         document.getElementById('spinner_'+id).classList.add('hidden');
       }).catch((error) => {
@@ -87,14 +88,36 @@ export const useProfilStore = defineStore('profil', {
       
     },
 
+    // enrichProfils
+    enrichProfilCout(id){
+      this.loading = true;
+      // hide span id enrich_{id}
+      document.getElementById('enrich_cout_'+id).style.display = 'none';
+      // show spinner id spinner_{id} by adding class inline-flex and removing class hidden
+      document.getElementById('spinner_cout_'+id).classList.remove('hidden');
+      document.getElementById('spinner_cout_'+id).classList.add('inline-flex');
+      axios.get('/api/enrich-profil-cout/'+id).then((response) => {
+        this.successResponse(response,false);
+        document.getElementById('spinner_cout_'+id).classList.remove('inline-flex');
+        document.getElementById('spinner_cout_'+id).classList.add('hidden');
+      }).catch((error) => {
+        this.catchError(error);
+        document.getElementById('spinner_cout_'+id).classList.remove('inline-flex');
+        document.getElementById('spinner_cout_'+id).classList.add('hidden');
+      })
+      
+    },
+
+
+    
+
     // post update-profils/{id}
     updateProfils(body){
       this.loading = true;
       axios.post('/api/update-profils/'+body.id, body).then((response) => {
-        this.successResponse(response);
+        this.successResponse(response,false);
       }).catch((error) => {
         this.catchError(error);
-
       })
     },
 
@@ -132,6 +155,53 @@ export const useProfilStore = defineStore('profil', {
         this.catchError(error);
       })
     },
+
+    // get profil tags
+    getTags(){
+      this.loading_tags = true;
+      axios.get('/api/profil-tags').then((response) => {
+        this.tags = response.data.data;
+        this.loading_tags = false;
+      }).catch((error) => {
+        this.catchError(error);
+      })
+    },
+
+    // post profil tag
+    postTag(name){
+      this.loading_tags = true;
+      const body = { name : name }
+      axios.post('/api/profil-tags', body).then((response) => {
+        this.getTags();
+        this.loading_tags = false;
+      }).catch((error) => {
+        this.catchError(error);
+        this.loading_tags = false;
+      })
+    },
+
+    // delete profil tag
+    deleteTag(id){
+      this.loading_tags = true;
+      axios.delete('/api/profil-tags/'+id).then((response) => {
+        this.getTags();
+        this.loading_tags = false;
+      }).catch((error) => {
+        this.catchError(error);
+      })
+    },
+
+    // post update profil tag
+    updateTag(body){
+      this.loading_tags = true;
+      axios.post('/api/update-profil-tags/'+body.id, body).then((response) => {
+        this.getTags();
+        this.loading_tags = false;
+      }).catch((error) => {
+        this.catchError(error);
+      })
+    },
+
 
 
 

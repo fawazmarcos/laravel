@@ -38,6 +38,7 @@ export const useUserStore = defineStore('user', {
       axios.get(url).then((response) => {
         this.users = response.data.data;
         this.meta = response.data.meta;
+        this.links = response.data.links;
         this.loading = false;
       }).catch((error) => {
         this.catchError(error);

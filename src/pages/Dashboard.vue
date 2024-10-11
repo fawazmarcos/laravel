@@ -1,8 +1,8 @@
 <script setup>
-import Dashboard from '@pages/Admin/Dashboard.vue' 
-import Entreprise from '@pages/Admin/Entreprise.vue'
-import Profil from '@pages/Admin/Profil.vue'
-import User  from '@pages/Admin/User.vue'
+import Dashboard from '@pages/admin/Dashboard.vue' 
+import Entreprise from '@pages/admin/Entreprise.vue'
+import Profil from '@pages/admin/Profil.vue'
+import User  from '@pages/admin/User.vue'
 
 
 </script>

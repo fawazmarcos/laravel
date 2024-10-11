@@ -1,15 +1,15 @@
 <script setup>
 // import page/admin component
 
-import AdminPage from '@pages/Resume/Admin.vue'
-import InteretPage from '@pages/Resume/Interet.vue'
-import CompetencePage from '@pages/Resume/Competence.vue'
-import CompetenceMetierPage from './Resume/CompetenceMetier.vue'
-import CompetenceTechPage from './Resume/CompetenceTech.vue'
-import ExperiencePage from '@pages/Resume/Experience.vue'
-import FormationPage from '@pages/Resume/Formation.vue'
-import CertificationPage from '@pages/Resume/Certification.vue'
-import ExpertisePage from '@pages/Resume/Expertise.vue'
+import AdminPage from '@pages/resume/Admin.vue'
+import InteretPage from '@pages/resume/Interet.vue'
+import CompetencePage from '@pages/resume/Competence.vue'
+import CompetenceMetierPage from '@pages/resume/CompetenceMetier.vue'
+import CompetenceTechPage from '@pages/resume/CompetenceTech.vue'
+import ExperiencePage from '@pages/resume/Experience.vue'
+import FormationPage from '@pages/resume/Formation.vue'
+import CertificationPage from '@pages/resume/Certification.vue'
+import ExpertisePage from '@pages/resume/Expertise.vue'
 
 
 </script>

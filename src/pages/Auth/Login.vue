@@ -26,9 +26,9 @@
           </button>
           <span v-else class="rounded-full w-full border p-3 bg-indigo-500/40 text-white duration-300 text-center">Se connecter</span>
           <!-- register -->
-          <div class="flex w-full justify-between">
+          <div class="flex w-full justify-center">
             <RouterLink class="text-center underline duration-300 hover:font-bold" to="/forgot-password">Mot de passe oublié?</RouterLink>
-            <RouterLink class="text-center underline duration-300 hover:font-bold" to="/register">Pas de compte ? Inscris-toi</RouterLink>
+            <!-- <RouterLink class="text-center underline duration-300 hover:font-bold" to="/register">Pas de compte ? Inscris-toi</RouterLink> -->
           </div>
        </form>
     </section>

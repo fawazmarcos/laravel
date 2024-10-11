@@ -5,119 +5,122 @@
 <template>
   <Dashboard>
     <template #content>
-      <!-- <h3 class="font-semibold text-3xl">Bienvenue {{ storeAuth.getUser().first_name ?? '' }} 🎉 </h3> -->
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <!-- Card -->
-          <RouterLink to="/users" class="flex flex-col bg-white border shadow-sm rounded-xl">
-            <div class="p-4 md:p-5">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Utilisateurs
-                </p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                  {{ storeDashboard.stats.users }} 
-                </h3>
-              </div>
+      <h3 class="font-semibold text-3xl">Tableau de bord</h3>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6" v-if="!storeDashboard.loading_stats">
+        <!-- Card -->
+        <RouterLink to="/users" class="flex flex-col bg-white border shadow-sm rounded-xl">
+          <div class="p-4 md:p-5">
+            <div class="flex items-center gap-x-2">
+              <p class="text-xs uppercase tracking-wide text-gray-500">
+                Utilisateurs
+              </p>
             </div>
-          </RouterLink>
-          <!-- End Card -->
+            <div class="mt-1 flex items-center gap-x-2">
+              <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
+                {{ storeDashboard.stats.users }} 
+              </h3>
+            </div>
+          </div>
+        </RouterLink>
+        <!-- End Card -->
 
-          <!-- Card -->
-          <RouterLink to="/entreprises" class="flex flex-col bg-white border shadow-sm rounded-xl">
-            <div class="p-4 md:p-5">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Entreprises
-                </p>
-              </div>
+        <!-- Card -->
+        <RouterLink to="/entreprises" class="flex flex-col bg-white border shadow-sm rounded-xl">
+          <div class="p-4 md:p-5">
+            <div class="flex items-center gap-x-2">
+              <p class="text-xs uppercase tracking-wide text-gray-500">
+                Entreprises
+              </p>
+            </div>
 
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                  {{ storeDashboard.stats.entreprises }} 
-                </h3>
-              </div>
+            <div class="mt-1 flex items-center gap-x-2">
+              <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
+                {{ storeDashboard.stats.entreprises }} 
+              </h3>
             </div>
-          </RouterLink>
-          <!-- End Card -->
-          <!-- Card -->
-          <RouterLink to="/profils" class="flex flex-col bg-white border shadow-sm rounded-xl">
-            <div class="p-4 md:p-5">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Profils scrappés
-                </p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                  {{ storeDashboard.stats.profils }} 
-                </h3>
-              </div>
+          </div>
+        </RouterLink>
+        <!-- End Card -->
+        <!-- Card -->
+        <RouterLink to="/profils" class="flex flex-col bg-white border shadow-sm rounded-xl">
+          <div class="p-4 md:p-5">
+            <div class="flex items-center gap-x-2">
+              <p class="text-xs uppercase tracking-wide text-gray-500">
+                Profils scrappés
+              </p>
             </div>
-          </RouterLink>
-          <!-- Card -->
-          <RouterLink to="/candidats" class="flex flex-col bg-white border shadow-sm rounded-xl">
-            <div class="p-4 md:p-5">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Candidats
-                </p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                  {{ storeDashboard.stats.candidats }} 
-                </h3>
-              </div>
+            <div class="mt-1 flex items-center gap-x-2">
+              <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
+                {{ storeDashboard.stats.profils }} 
+              </h3>
             </div>
-          </RouterLink>
-          <RouterLink to="/offers" class="flex flex-col bg-white border shadow-sm rounded-xl">
-            <div class="p-4 md:p-5">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Offres en cours
-                </p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                  {{ storeDashboard.stats.open_offers }} 
-                </h3>
-              </div>
+          </div>
+        </RouterLink>
+        <!-- Card -->
+        <RouterLink to="/candidats" class="flex flex-col bg-white border shadow-sm rounded-xl">
+          <div class="p-4 md:p-5">
+            <div class="flex items-center gap-x-2">
+              <p class="text-xs uppercase tracking-wide text-gray-500">
+                Candidats
+              </p>
             </div>
-          </RouterLink>
-          <RouterLink to="/offers" class="flex flex-col bg-white border shadow-sm rounded-xl">
-            <div class="p-4 md:p-5">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Offres clôturées
-                </p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                  {{ storeDashboard.stats.close_offers }} 
-                </h3>
-              </div>
+            <div class="mt-1 flex items-center gap-x-2">
+              <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
+                {{ storeDashboard.stats.candidats }} 
+              </h3>
             </div>
-          </RouterLink>
-          <!-- End Card --> 
-              <!-- Card -->
-          <RouterLink to="/clients" class="flex flex-col bg-white border shadow-sm rounded-xl">
-            <div class="p-4 md:p-5">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Clients
-                </p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                  {{ storeDashboard.stats.clients }} 
-                </h3>
-              </div>
+          </div>
+        </RouterLink>
+        <RouterLink to="/offers" class="flex flex-col bg-white border shadow-sm rounded-xl">
+          <div class="p-4 md:p-5">
+            <div class="flex items-center gap-x-2">
+              <p class="text-xs uppercase tracking-wide text-gray-500">
+                Offres en cours
+              </p>
             </div>
-          </RouterLink>
-          <!-- End Card --> 
+            <div class="mt-1 flex items-center gap-x-2">
+              <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
+                {{ storeDashboard.stats.open_offers }} 
+              </h3>
+            </div>
+          </div>
+        </RouterLink>
+        <RouterLink to="/offers" class="flex flex-col bg-white border shadow-sm rounded-xl">
+          <div class="p-4 md:p-5">
+            <div class="flex items-center gap-x-2">
+              <p class="text-xs uppercase tracking-wide text-gray-500">
+                Offres clôturées
+              </p>
+            </div>
+            <div class="mt-1 flex items-center gap-x-2">
+              <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
+                {{ storeDashboard.stats.close_offers }} 
+              </h3>
+            </div>
+          </div>
+        </RouterLink>
+        <!-- End Card --> 
+            <!-- Card -->
+        <RouterLink to="/clients" class="flex flex-col bg-white border shadow-sm rounded-xl">
+          <div class="p-4 md:p-5">
+            <div class="flex items-center gap-x-2">
+              <p class="text-xs uppercase tracking-wide text-gray-500">
+                Clients
+              </p>
+            </div>
+            <div class="mt-1 flex items-center gap-x-2">
+              <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
+                {{ storeDashboard.stats.clients }} 
+              </h3>
+            </div>
+          </div>
+        </RouterLink>
+        <!-- End Card --> 
       </div>
-      <div class="flex flex-col gap-5">
+      <div v-if="storeDashboard.loading_stats">
+        <Loading />
+      </div>
+      <div class="flex flex-col gap-5" v-if="!storeDashboard.loading_last_data">
         <div class="flex flex-col gap-4" v-if="storeDashboard.last_data">
           <H4 class="font-semibold text-xl">Derniers profils ajoutés</H4>
           <div class="grid grid-cols-4  gap-3">
@@ -130,7 +133,7 @@
                   </h3>
                 </div>
                 <p class="mt-1 text-gray-500 text-xs">
-                  {{ profil.title }}
+                  {{ profil.title ? profil.title.slice(0,72) + '...' : ''}}
                 </p>
               </div>
             </a>
@@ -154,7 +157,7 @@
             </a>
           </div> 
         </div>
-      </div>
+      </div> 
     </template>
   </Dashboard>
 </template>

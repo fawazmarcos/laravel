@@ -5,8 +5,8 @@ import axios from 'axios'
 const axiosIns = axios.create({
 // You can add your headers here
 // ================================
-// baseURL: 'https://api.planus-analytics.com',
-baseURL: 'http://localhost:8000',
+baseURL: 'https://api.planus-analytics.com',
+// baseURL: 'http://localhost:8000',
 // timeout: 1000,
 // headers: {'X-Custom-Header': 'foobar'}
 })
@@ -26,6 +26,7 @@ axiosIns.interceptors.request.use(
   },
   error => Promise.reject(error),
 )
+
 
 // Add request/response interceptor
 axiosIns.interceptors.response.use(

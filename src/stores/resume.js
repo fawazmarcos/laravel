@@ -4,8 +4,8 @@ import 'vue3-toastify/dist/index.css';
 import { defineStore } from 'pinia'
 import router from '../router'
 
-export const useOfferStore = defineStore('offer', {
-  state: () => ({loading: false,offers:[],offer:null,secteurs:[],meta:[],links:[],total_offers:0,total_entreprises:0,currentUrl:null,loading_candidats:false,candidats:[] }),
+export const useResumeStore = defineStore('resume', {
+  state: () => ({loading: false,resumes:[],resume:null,meta:[],links:[],currentUrl:null }),
   actions: {
 
     // catch error
@@ -23,22 +23,22 @@ export const useOfferStore = defineStore('offer', {
     successResponse(response){
       this.loading = false;
       console.log(response.data);
-      this.getOffers(this.currentUrl);
+      this.getResumes(this.currentUrl);
       toast.success(response.data.message, {
         autoClose: 5000,
       });
     },
-    // get offers
-    getOffers(url=null){
+    // get resumes
+    getResumes(url=null){
       if(url){
         url = url;
       }else{
-        url = '/api/offers';
+        url = '/api/resumes';
       }
       this.loading = true;
       axios.get(url).then((response) => {
         this.currentUrl = url;
-        this.offers = response.data.data;
+        this.resumes = response.data.data;
         this.meta = response.data.meta;
         this.links = response.data.links;
         this.loading = false;
@@ -47,21 +47,20 @@ export const useOfferStore = defineStore('offer', {
       })
     },
  
-
-    // post offers
-    postOffers(body){
+    // post resumes
+    postResumes(body){
       this.loading = true;
-      axios.post('/api/offers', body).then((response) => {
+      axios.post('/api/resumes', body).then((response) => {
         this.successResponse(response);
       }).catch((error) => {
         this.catchError(error);
       })
     }, 
 
-    // post update-offers/{id}
-    updateOffers(body){
+    // post resumes/{id}
+    updateResumes(body){
       this.loading = true;
-      axios.post('/api/update-offers/'+body.id, body).then((response) => {
+      axios.post('/api/resumes/'+body.id, body).then((response) => {
         this.successResponse(response);
       }).catch((error) => {
         this.catchError(error);
@@ -69,20 +68,20 @@ export const useOfferStore = defineStore('offer', {
       })
     },
 
-    // delete offers/{id}
-    deleteOffers(id){
+    // delete resumes/{id}
+    deleteResumes(id){
       this.loading = true;
-      axios.delete('/api/offers/'+id).then((response) => {
+      axios.delete('/api/resumes/'+id).then((response) => {
         this.successResponse(response);
       }).catch((error) => {
         this.catchError(error);
       })
     },
 
-    // search offers
-    searchOffers(body){
-      axios.post('/api/search-offers',body).then((response) => {
-        this.offers = response.data.data;
+    // search resumes
+    searchResumes(body){
+      axios.post('/api/resumes/search',body).then((response) => {
+        this.resumes = response.data.data;
         this.meta = response.data.meta;
         this.links = response.data.links;
         this.loading = false;
@@ -91,20 +90,7 @@ export const useOfferStore = defineStore('offer', {
       })
     },
 
-    get_candidats_by_offer(offer_id){
-
-      this.loading_candidats = true;
-      axios.get('/api/get-candidats-by-offer/'+offer_id).then((response) => {
-        this.candidats = response.data.data;
-        this.loading_candidats = false;
-      }).catch((error) => {
-        this.catchError(error);
-      })
-
-    }
-
-
   },
 })
 
-export default useOfferStore;
+export default useResumeStore;

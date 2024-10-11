@@ -5,7 +5,7 @@ import { defineStore } from 'pinia'
 import router from '../router'
 
 export const useTimesheetStore = defineStore('timesheet', {
-  state: () => ({loading: false,timesheets:[],timesheet:null,secteurs:[],meta:[],links:[],total_timesheets:0,total_entreprises:0,currentUrl:null,pending_timesheets:[],monthYear:null }),
+  state: () => ({loading: false,timesheets:[],timesheet:null,secteurs:[],meta:[],links:[],total_timesheets:0,total_entreprises:0,currentUrl:null,pending_timesheets:[],monthYear:null,current_timesheet:null }),
   actions: {
 
     // catch error
@@ -20,9 +20,11 @@ export const useTimesheetStore = defineStore('timesheet', {
       });
     },
     // notify response
-    successResponse(response,showToast=true){
+    successResponse(response,showToast=true,reload=true){
       this.loading = false;
-      this.getTimesheets(this.currentUrl);
+      if(reload){
+        this.getTimesheets(this.currentUrl);
+      }
       if(showToast){
         toast.success(response.data.message, {
           autoClose: 5000,
@@ -73,6 +75,7 @@ export const useTimesheetStore = defineStore('timesheet', {
       this.loading = true;
       axios.get('/api/month-year').then((response) => {
         this.monthYear = response.data.data;
+        this.loading = false;
       }).catch((error) => {
         this.catchError(error);
       })
@@ -112,9 +115,20 @@ export const useTimesheetStore = defineStore('timesheet', {
 
     // update timesheet entry project
     updateEntryProject(body){
-      this.loading = true;
+      // this.loading = true;
       axios.post('/api/update-entry-project/'+body.id, body).then((response) => {
-        this.successResponse(response,false);
+        this.successResponse(response,false,false);
+      }).catch((error) => {
+        this.catchError(error);
+      })
+    },
+
+    // get timesheet by id
+    getTimesheetById(id){
+      this.loading = true;
+      axios.get('/api/timesheet/'+id).then((response) => {
+        this.current_timesheet = response.data.data;
+        this.loading = false;
       }).catch((error) => {
         this.catchError(error);
       })

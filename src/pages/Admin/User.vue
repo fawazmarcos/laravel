@@ -95,11 +95,11 @@
         <dialog id="modal_user" class="modal">
           
         </dialog>
-  
+        
       </div>
       <div class="flex flex-col gap-4 " v-else>
         <div class="flex justify-between items-center">
-          <span @click="showForm = false" class="cursor-pointer py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none"> <i class="fa fa-arrow-left"></i> Retour</span>
+          <span @click="closeForm()" class="cursor-pointer py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:pointer-events-none"> <i class="fa fa-arrow-left"></i> Retour</span>
         </div>
         <form method="POST" @submit.prevent="postModal()" class=" sm:w-full lg:w-[700px] m-3 sm:mx-auto">
             <div class="flex flex-col bg-white border shadow-sm rounded-xl">
@@ -226,14 +226,8 @@
                 </span>
               </div>
             </div>
-          </form>
-
-      </div>
-
-
-
-
-
+          </form> 
+      </div>  
     </template>
   </Dashboard>
 </template>
@@ -305,6 +299,11 @@ export default {
       }
     },
 
+    closeForm(){
+      this.showForm = false;
+      this.initUser();
+    },
+
     readURL(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -346,8 +345,10 @@ export default {
         }
       }
 
-      const all_permissions = this.selectedPermissions.map(permission => permission.id)
-      data.append('permissions', all_permissions)
+      if(this.selectedPermissions && this.selectedPermissions.length > 0) {
+        const all_permissions = this.selectedPermissions.map(permission => permission.id)
+        data.append('permissions', all_permissions)
+      }
 
       if(this.update) {
         data.id = this.user.id
